@@ -14,6 +14,9 @@ class Title(models.Model):
     category = models.ForeignKey('Category', on_delete=models.SET_NULL,
                                  null=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Category(models.Model):
     name = models.CharField(max_length=256)
@@ -22,6 +25,9 @@ class Category(models.Model):
                                 regex='^[-a-zA-Z0-9_]+$',
                             )])
 
+    def __str__(self):
+        return self.name
+
 
 class Genre(models.Model):
     name = models.CharField(max_length=256)
@@ -29,6 +35,9 @@ class Genre(models.Model):
                             validators=[RegexValidator(
                                 regex='^[-a-zA-Z0-9_]+$',
                             )])
+
+    def __str__(self):
+        return self.name
 
 
 class GenreTitle(models.Model):

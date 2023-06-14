@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 
 from rewiews.models import Title, Genre, Category
-from serializers import TitleSerializer, GenreSerializer, CotegorySerializer
+from .serializers import TitleSerializer, GenreSerializer, CotegorySerializer
 
 
 class TitleViewsSet(ModelViewSet):

@@ -1,2 +1,3 @@
-# api_yamdb
-api_yamdb
+# Надо заполнить рефдми со всеми командами 
+```pip install ```
+``` pip delate```
