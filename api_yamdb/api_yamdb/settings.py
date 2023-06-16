@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'rewiews.apps.RewiewsConfig',
     'users.apps.UsersConfig',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -104,3 +105,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
+
+LOAD_STATIC_DB = (BASE_DIR / 'static/data/')

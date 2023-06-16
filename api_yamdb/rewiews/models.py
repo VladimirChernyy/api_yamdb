@@ -41,5 +41,18 @@ class Genre(models.Model):
 
 
 class GenreTitle(models.Model):
+    id = models.IntegerField(primary_key=True)
     genre = models.ForeignKey('Genre', on_delete=models.CASCADE)
     category = models.ForeignKey('Category', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.id
+
+
+class Users(models.Model): pass
+
+
+class Comments(models.Model): pass
+
+
+class Review(models.Model): pass
