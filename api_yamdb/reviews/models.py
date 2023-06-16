@@ -1,7 +1,20 @@
 import datetime
-
-from django.core.validators import MaxValueValidator, RegexValidator
+from django.core.validators import RegexValidator, MaxValueValidator
 from django.db import models
+
+
+class Review(models.Model):
+    text = models.TextField() # тут бы Юзера
+    author = models.ForeignKey()
+    score = models.PositiveIntegerField()
+    pub_date = models.DateTimeField()
+    title = models.ForeignKey()
+
+
+class Comment(models.Model):
+    text = models.ForeignKey() # тут бы Юзера
+    pub_date = models.DateTimeField()
+    review = models.ForeignKey()
 
 
 class Title(models.Model):

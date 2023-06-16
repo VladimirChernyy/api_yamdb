@@ -1,5 +1,18 @@
 from rest_framework import serializers
-from rewiews import models
+
+from reviews import models
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        models = models.Review
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        models = models.Comment
 
 
 class TitleSerializer(serializers.ModelSerializer):
@@ -14,7 +27,7 @@ class GenreSerializer(serializers.ModelSerializer):
         models = models.Genre
 
 
-class CotegorySerializer(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         models = models.Category
