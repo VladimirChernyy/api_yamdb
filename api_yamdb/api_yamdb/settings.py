@@ -27,8 +27,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'rest_framework',
     'rest_framework_simplejwt',
-    'api',
-]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -108,6 +107,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
+
+LOAD_STATIC_DB = (BASE_DIR / 'static/data/')
 AUTH_USER_MODEL = 'api.User'
 
 REST_FRAMEWORK = {
@@ -136,4 +137,3 @@ AUTHENTICATION_BACKENDS = (
 )
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')

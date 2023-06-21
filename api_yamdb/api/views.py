@@ -1,8 +1,10 @@
 from rest_framework.viewsets import ModelViewSet
 
+
 from rewiews.models import Title, Genre, Category, User
 from serializers import (TitleSerializer, GenreSerializer, CotegorySerializer,
 SignUpSerializer, TokenSerializer, UserSerializer)
+
 
 from rest_framework import filters, status, viewsets
 from rest_framework.exceptions import MethodNotAllowed
