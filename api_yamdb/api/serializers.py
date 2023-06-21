@@ -10,14 +10,37 @@ from .models import User
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    author = serializers.StringRelatedField(read_only=True)
+    title = serializers.SlugRelatedField(
+        slug_field='id',
+        many=False,
+        read_only=True,
+    )
+
     class Meta:
-        fields = '__all__'
+        fields = fields = (
+            'id',
+            'text',
+            'author',
+            'score',
+            'pub_date',
+            'title',
+        )
         models = models.Review
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='username',
+    )
     class Meta:
-        fields = '__all__'
+        fields = (
+            'id',
+            'text',
+            'author',
+            'pub_date',
+        )
         models = models.Comment
 
 
@@ -104,7 +127,7 @@ class TokenSerializer(serializers.ModelSerializer, TokenObtainPairSerializer):
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = model.User
+        model = models.User
         fields = (
             'username', 'email', 'first_name', 'last_name',
         )
