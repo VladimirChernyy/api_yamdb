@@ -1,9 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
 
-from reviews.models import Title, Genre, Category, User
-from serializers import (TitleSerializer, GenreSerializer, CategorySerializer,
-                         SignUpSerializer, TokenSerializer, UserSerializer)
-
 from rest_framework import filters, status, viewsets
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.generics import get_object_or_404
@@ -14,11 +10,18 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenViewBase
 
 from .permissions import AdminOnly
+from reviews.models import Title, Genre, Category
+from users.models import User
+from .serializers import (TitleSerializer, GenreSerializer, CategorySerializer,
+                          SignUpSerializer, TokenSerializer, UserSerializer)
 
 
 class TitleViewsSet(ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
+
+    def get_queryset(self):
+        pass
 
 
 class CategoryViewsSet(ModelViewSet):

@@ -47,3 +47,9 @@ class GenreTitle(models.Model):
 
     def __str__(self):
         return self.id
+
+
+class Comments(models.Model): pass
+
+
+class Review(models.Model): pass
