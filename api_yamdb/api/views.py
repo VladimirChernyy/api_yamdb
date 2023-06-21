@@ -1,3 +1,4 @@
+from rest_framework.viewsets import ModelViewSet
 from rest_framework import filters, status, viewsets
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.generics import get_object_or_404
@@ -7,9 +8,34 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenViewBase
 
-from .models import User
+from serializers import TitleSerializer, GenreSerializer, CategorySerializer, ReviewSerializer, CommentSerializer, SignUpSerializer, TokenSerializer, UserSerializer
+from reviews.models import Title, Genre, Category, Review, Comment, User
 from .permissions import AdminOnly
-from .serializers import SignUpSerializer, TokenSerializer, UserSerializer
+
+
+class RewiewViewsSet(ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+
+
+class CommentViewsSet(ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+
+
+class TitleViewsSet(ModelViewSet):
+    queryset = Title.objects.all()
+    serializer_class = TitleSerializer
+
+
+class CategoryViewsSet(ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+
+class GenreViewsSet(ModelViewSet):
+    queryset = Genre.objects.all()
+    serializer_class = GenreSerializer
 
 
 class SignUpView(CreateModelMixin, RetrieveModelMixin, viewsets.GenericViewSet):
