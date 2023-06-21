@@ -1,12 +1,11 @@
-from reviews import models
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from rest_framework.exceptions import NotFound
-from rest_framework.validators import UniqueTogetherValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import AccessToken
 
-from .models import User
+from reviews.models import Title, Genre, Category
+from users.models import User
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -47,23 +46,24 @@ class CommentSerializer(serializers.ModelSerializer):
 class TitleSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
-        models = models.Title
+        model = Title
 
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
-        models = models.Genre
+        model = Genre
 
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
-        models = models.Category
-        
+        model = Category
+
+
 class SignUpSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.User
+        model = User
         fields = ('username', 'email')
 
     def validate_username(self, username):
@@ -74,8 +74,8 @@ class SignUpSerializer(serializers.ModelSerializer):
         return username
 
     def create(self, validated_data):
-        user = models.User.objects.create_user(**validated_data)
-        user.email_user(
+        user = User.objects.create_user(**validated_data)
+        user.email(
             subject='confirmation_code',
             message=user.confirmation_code,
             fail_silently=False
@@ -93,7 +93,7 @@ class TokenSerializer(serializers.ModelSerializer, TokenObtainPairSerializer):
         self.fields['password'].required = False
 
     class Meta:
-        model = models.User
+        model = User
         fields = ('username', 'confirmation_code')
 
     def validate(self, attrs):
@@ -125,18 +125,19 @@ class TokenSerializer(serializers.ModelSerializer, TokenObtainPairSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-
     class Meta:
-        model = models.User
+        model = User
         fields = (
-            'username', 'email', 'first_name', 'last_name',
+            'username', 'email', 'first_name', 'last_name', "bio", "role"
         )
 
     def create(self, validated_data):
-        user = models.User.objects.create_user(**validated_data)
+        user = User.objects.create_user(**validated_data)
         return {
             'username': user.username,
             'email': user.email,
             'first_name': user.first_name,
             'last_name': user.last_name,
+            'bio': user.bio,
+            'role': user.role,
         }

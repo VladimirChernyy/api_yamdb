@@ -38,16 +38,16 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=256)),
                 ('year', models.PositiveIntegerField(validators=[django.core.validators.MaxValueValidator(datetime.datetime(2023, 6, 14, 10, 7, 29, 19592))])),
                 ('description', models.TextField()),
-                ('category', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='rewiews.category')),
-                ('genre', models.ManyToManyField(blank=True, db_index=True, to='rewiews.Genre')),
+                ('category', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='reviews.category')),
+                ('genre', models.ManyToManyField(blank=True, db_index=True, to='reviews.Genre')),
             ],
         ),
         migrations.CreateModel(
             name='GenreTitle',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='rewiews.category')),
-                ('genre', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='rewiews.genre')),
+                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='reviews.category')),
+                ('genre', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='reviews.genre')),
             ],
         ),
     ]

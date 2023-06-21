@@ -1,4 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
+
 from rest_framework import filters, status, viewsets
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.generics import get_object_or_404
@@ -8,9 +9,13 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenViewBase
 
-from serializers import TitleSerializer, GenreSerializer, CategorySerializer, ReviewSerializer, CommentSerializer, SignUpSerializer, TokenSerializer, UserSerializer
-from reviews.models import Title, Genre, Category, Review, Comment, User
-from .permissions import AdminOnly
+from api.permissions import AdminOnly
+from api.serializers import (TitleSerializer, GenreSerializer,
+                             CategorySerializer,
+                             SignUpSerializer, TokenSerializer, UserSerializer,
+                            ReviewSerializer, CommentSerializer)
+from reviews.models import Title, Genre, Category, Review, Comment
+from users.models import User
 
 
 class RewiewViewsSet(ModelViewSet):
@@ -46,10 +51,12 @@ class CommentViewsSet(ModelViewSet):
         review = get_object_or_404(Review, id=review_id, title=title)
         serializer.save(author=self.request.user, review=review)
 
-
 class TitleViewsSet(ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
+
+    def get_queryset(self):
+        pass
 
 
 class CategoryViewsSet(ModelViewSet):
@@ -62,7 +69,8 @@ class GenreViewsSet(ModelViewSet):
     serializer_class = GenreSerializer
 
 
-class SignUpView(CreateModelMixin, RetrieveModelMixin, viewsets.GenericViewSet):
+class SignUpView(CreateModelMixin, RetrieveModelMixin,
+                 viewsets.GenericViewSet):
     queryset = User.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = SignUpSerializer
@@ -82,7 +90,7 @@ class SignUpView(CreateModelMixin, RetrieveModelMixin, viewsets.GenericViewSet):
         serializer = self.get_serializer(request.data)
         username = serializer.data["username"]
         user = get_object_or_404(User, username=username)
-        user.email_user(
+        user.email(
             subject='confirmation_code',
             message=user.confirmation_code,
             fail_silently=False
