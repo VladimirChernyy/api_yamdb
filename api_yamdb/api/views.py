@@ -9,11 +9,12 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenViewBase
 
-from .permissions import AdminOnly
+from api.permissions import AdminOnly
+from api.serializers import (TitleSerializer, GenreSerializer,
+                             CategorySerializer,
+                             SignUpSerializer, TokenSerializer, UserSerializer)
 from reviews.models import Title, Genre, Category
 from users.models import User
-from .serializers import (TitleSerializer, GenreSerializer, CategorySerializer,
-                          SignUpSerializer, TokenSerializer, UserSerializer)
 
 
 class TitleViewsSet(ModelViewSet):
@@ -55,7 +56,7 @@ class SignUpView(CreateModelMixin, RetrieveModelMixin,
         serializer = self.get_serializer(request.data)
         username = serializer.data["username"]
         user = get_object_or_404(User, username=username)
-        user.email_user(
+        user.email(
             subject='confirmation_code',
             message=user.confirmation_code,
             fail_silently=False

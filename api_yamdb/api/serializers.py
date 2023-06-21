@@ -11,19 +11,19 @@ from users.models import User
 class TitleSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
-        models = Title
+        model = Title
 
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ('id',)
-        models = Genre
+        fields = '__all__'
+        model = Genre
 
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ('id',)
-        models = Category
+        fields = '__all__'
+        model = Category
 
 
 class SignUpSerializer(serializers.ModelSerializer):
@@ -40,7 +40,7 @@ class SignUpSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
-        user.email_user(
+        user.email(
             subject='confirmation_code',
             message=user.confirmation_code,
             fail_silently=False

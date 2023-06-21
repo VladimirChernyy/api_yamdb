@@ -129,7 +129,7 @@ SIMPLE_JWT = {
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'core.custom_authentication.AuthenticationWithoutPassword',
+    # 'core.custom_authentication.AuthenticationWithoutPassword',
 )
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'

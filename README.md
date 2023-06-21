@@ -1,14 +1,13 @@
-# Онлайн магазин 
+# YaMDb
 ### Описание
-Магазин продажи инструмента и расходных материалов для обработки керамогранита
+Проект YaMDb собирает отзывы пользователей на различные произведения.
 ### Технологии
-- Python 3.10.6
+- Python 3.10
 - Django 4.2
-- Postgresql 15.3
 ### Запуск проекта
 Скопируйте репазиторий
 
-```$ git clone git@github.com:VladimirChernyy/api_yamdb.git``
+```$ git clone git@github.com:VladimirChernyy/api_yamdb.git```
 
 Перейдите в директорию проекта
 
@@ -36,13 +35,15 @@ Windows
 
 ```$ cd tileshop```
 
-Выполните миграции
+Выполните миграции и загрузите базу данных
 
 Linux/MacOS
 
 ```$ python3 manage.py makemigrations```
 
 ```$ python3 manage.py migrate```
+
+```$ python3 manage.py load_data```
 
 Windows
 
