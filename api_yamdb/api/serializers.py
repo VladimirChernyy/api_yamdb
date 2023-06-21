@@ -1,12 +1,10 @@
-from rewiews import models
+from reviews import models
 
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from rest_framework.exceptions import NotFound
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import AccessToken
-
-from rewiews.models import User
 
 
 class TitleSerializer(serializers.ModelSerializer):
@@ -21,14 +19,15 @@ class GenreSerializer(serializers.ModelSerializer):
         models = models.Genre
 
 
-class CotegorySerializer(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         models = models.Category
 
+
 class SignUpSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = models.User
         fields = ('username', 'email')
 
     def validate_username(self, username):
@@ -39,7 +38,7 @@ class SignUpSerializer(serializers.ModelSerializer):
         return username
 
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
+        user = models.User.objects.create_user(**validated_data)
         user.email_user(
             subject='confirmation_code',
             message=user.confirmation_code,
@@ -58,7 +57,7 @@ class TokenSerializer(serializers.ModelSerializer, TokenObtainPairSerializer):
         self.fields['password'].required = False
 
     class Meta:
-        model = User
+        model = models.User
         fields = ('username', 'confirmation_code')
 
     def validate(self, attrs):
@@ -90,15 +89,14 @@ class TokenSerializer(serializers.ModelSerializer, TokenObtainPairSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-
     class Meta:
-        model = User
+        model = models.User
         fields = (
-            'username', 'email', 'first_name', 'last_name',"bio", "role"
+            'username', 'email', 'first_name', 'last_name', "bio", "role"
         )
 
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
+        user = models.User.objects.create_user(**validated_data)
         return {
             'username': user.username,
             'email': user.email,
