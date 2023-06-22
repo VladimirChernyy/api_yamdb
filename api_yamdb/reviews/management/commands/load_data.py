@@ -1,60 +1,58 @@
-import csv
-import os
+from csv import DictReader
 
-from django.core.management.base import BaseCommand
-
-
-from api_yamdb.settings import LOAD_STATIC_DB
-from reviews.models import Category, Genre, GenreTitle, Title, Comments, Review
+from django.core.management import BaseCommand
+from reviews.models import Comment, Review, Category, Genre, Title
 from users.models import User
-
-CSV_MODELS = {
-    'category.csv': Category,
-    #'comments.csv': Comments,
-    'genre.csv': Genre,
-    'genre_title.csv': GenreTitle,
-    #'review.csv': Review,
-    'titles.csv': Title,
-    'users.csv': User,
-}
-CSV_MODELS_ID = {
-    'category': ('category', Category),
-    'title_id': ('title', Title),
-    'genre_id': ('genre', Genre),
-    'author': ('author', User),
-    #'review_id': ('review', Review),
-}
-
-
-def open_csv_file(file_name):
-    csv_file = file_name
-    csv_path = os.path.join(LOAD_STATIC_DB, csv_file)
-    with open(csv_path) as file:
-        return list(csv.reader(file))
-
-
-def change_foreign_values(data_csv):
-    data_csv_copy = data_csv.copy()
-    for field_key, field_value in data_csv.items():
-        if field_key in CSV_MODELS_ID.keys():
-            field_key0 = CSV_MODELS_ID[field_key][0]
-            data_csv_copy[field_key0] = CSV_MODELS_ID[field_key][
-                1].objects.get(
-                pk=field_value)
-    return data_csv_copy
-
-
-def load_csv(file_name, class_name):
-    data = open_csv_file(file_name)
-    rows = data[1:]
-    for row in rows:
-        data_csv = dict(zip(data[0], row))
-        data_csv = change_foreign_values(data_csv)
-        table = class_name(**data_csv)
-        table.save()
 
 
 class Command(BaseCommand):
-    def handle(self, *args, **options):
-        for key, value in CSV_MODELS.items():
-            load_csv(key, value)
+
+    def handle(self, *args, **kwargs):
+        for row in DictReader(
+                open('./static/data/users.csv')
+        ):
+            user = User(
+                id=row['id'], username=row['username'],
+                email=row['email'], role=row['role'],
+                bio=row['bio'], first_name=row['first_name'],
+                last_name=row['last_name']
+            )
+            user.save()
+        for row in DictReader(
+                open('./static/data/category.csv')
+        ):
+            category = Category(
+                id=row['id'], name=row['name'], slug=row['slug']
+            )
+            category.save()
+        for row in DictReader(
+                open('./static/data/genre.csv')
+        ):
+            genre = Genre(id=row['id'], name=row['name'], slug=row['slug'])
+            genre.save()
+        for row in DictReader(
+                open('./static/data/titles.csv')
+        ):
+            title = Title(
+                id=row['id'], name=row['name'],
+                year=row['year'], category_id=row['category']
+            )
+            title.save()
+        for row in DictReader(
+                open('./static/data/review.csv')
+        ):
+            review = Review(
+                id=row['id'], title_id=row['title_id'],
+                text=row['text'], author_id=row['author'],
+                score=row['score'], pub_date=row['pub_date']
+            )
+            review.save()
+        for row in DictReader(
+                open('./static/data/comments.csv')
+        ):
+            comment = Comment(
+                id=row['id'], review_id=row['review_id'],
+                text=row['text'], author_id=row['author'],
+                pub_date=row['pub_date']
+            )
+            comment.save()

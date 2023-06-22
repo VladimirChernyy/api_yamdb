@@ -1,26 +1,31 @@
-
-from datetime import datetime
-from django.core.validators import RegexValidator, MaxValueValidator, MinValueValidator
+from django.core.validators import RegexValidator, MaxValueValidator, \
+    MinValueValidator
 from django.db import models
+from django.utils import timezone
+
+from users.models import User
+from api_yamdb.settings import MIN_SCORE, MAX_SCORE
+
+LENGTH_TEXT = 15
 
 
 class Review(models.Model):
     text = models.TextField(verbose_name='Текст ревью')
     author = models.ForeignKey(
-        'User',
+        User,
         on_delete=models.CASCADE,
-        related_name='Reviews',
+        related_name='reviews',
         verbose_name='Автор',
     )
     score = models.PositiveIntegerField(
         verbose_name='Оценка',
         validators=(
             MinValueValidator(
-                1,
+                MIN_SCORE,
                 message='Оценка меньше допустимой',
             ),
             MaxValueValidator(
-                10,
+                MAX_SCORE,
                 message='Оценка больше допустимой',
             ),
         ),
@@ -32,8 +37,9 @@ class Review(models.Model):
     title = models.ForeignKey(
         'Title',
         on_delete=models.CASCADE,
-        related_name='Reviews',
+        related_name='reviews',
         verbose_name='Название произведения',
+        null=True,
     )
 
     class Meta:
@@ -48,13 +54,13 @@ class Review(models.Model):
         )
 
     def __str__(self):
-        return self.text
+        return self.text[:LENGTH_TEXT]
 
 
 class Comment(models.Model):
     text = models.TextField(verbose_name='текст')
     author = models.ForeignKey(
-        'User',
+        User,
         on_delete=models.CASCADE,
         related_name='comments',
         verbose_name='Aвтор',
@@ -76,18 +82,25 @@ class Comment(models.Model):
         ordering = ('-pub_date',)
 
     def __str__(self):
-        return self.text[:15]
+        return self.text[:LENGTH_TEXT]
+
 
 class Title(models.Model):
     name = models.CharField(max_length=256)
     year = models.PositiveIntegerField(
-        validators=[MaxValueValidator(datetime.now()
-                                      )])
+        validators=[MaxValueValidator(timezone.now().year)])
     description = models.TextField()
-    genre = models.ManyToManyField('Genre', db_index=True,
-                                   blank=True)
-    category = models.ForeignKey('Category', on_delete=models.SET_NULL,
+    genre = models.ManyToManyField('Genre',
+                                   db_index=True,
+                                   blank=True, )
+
+    category = models.ForeignKey('Category',
+                                 on_delete=models.SET_NULL,
+                                 related_name='titles',
                                  null=True)
+
+    class Meta:
+        ordering = ('-id',)
 
     def __str__(self):
         return self.name
@@ -100,6 +113,9 @@ class Category(models.Model):
                                 regex='^[-a-zA-Z0-9_]+$',
                             )])
 
+    class Meta:
+        ordering = ('-id',)
+
     def __str__(self):
         return self.name
 
@@ -111,20 +127,20 @@ class Genre(models.Model):
                                 regex='^[-a-zA-Z0-9_]+$',
                             )])
 
+    class Meta:
+        ordering = ('-id',)
+
     def __str__(self):
         return self.name
 
 
 class GenreTitle(models.Model):
-    id = models.IntegerField(primary_key=True)
-    genre = models.ForeignKey('Genre', on_delete=models.CASCADE)
-    category = models.ForeignKey('Category', on_delete=models.CASCADE)
+    genre = models.ForeignKey('Genre',
+                              related_name='genre',
+                              on_delete=models.CASCADE)
+    title = models.ForeignKey('Title',
+                              related_name='title',
+                              on_delete=models.CASCADE)
 
     def __str__(self):
         return self.id
-
-
-class Comments(models.Model): pass
-
-
-class Review(models.Model): pass
