@@ -126,7 +126,8 @@ def create_user(request):
     email = request.data.get('email')
     user = User.objects.filter(username=username, email=email).first()
 
-    if user: # Пользователь уже существует, высылать новый код подтверждения
+    # Пользователь уже существует, высылать новый код подтверждения
+    if user:
         token = default_token_generator.make_token(user)
         send_mail(
             'confirmation code',
@@ -136,7 +137,8 @@ def create_user(request):
         )
         return Response(data=request.data, status=status.HTTP_200_OK)
 
-    # Если пользователя не существует, создать нового и выслать код подтверждения
+    # Если пользователя не существует, создать нового и выслать
+    # код подтверждения
     serializer = CreateUserSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
