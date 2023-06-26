@@ -14,6 +14,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from api.filters import TitleFilter
+from api.mixins import GetListCreateDeleteMixin
 from api.permissions import (IsAdminUser, IsAdminOrReadOnly,
                              IsAdminModeratorAuthor)
 from api.serializers import (TitleSerializer, GenreSerializer,
@@ -76,7 +77,7 @@ class TitleViewSet(viewsets.ModelViewSet):
         return TitleSerializer
 
 
-class CategoryViewSet(ModelViewSet):
+class CategoryViewSet(GetListCreateDeleteMixin):
     queryset = Category.objects.all()
     pagination_class = PageNumberPagination
     serializer_class = CategorySerializer
@@ -86,7 +87,7 @@ class CategoryViewSet(ModelViewSet):
     lookup_field = 'slug'
 
 
-class GenreViewSet(ModelViewSet):
+class GenreViewSet(GetListCreateDeleteMixin):
     queryset = Genre.objects.all()
     pagination_class = PageNumberPagination
     serializer_class = GenreSerializer
@@ -103,10 +104,11 @@ class UserViewSet(viewsets.ModelViewSet):
     filter_backends = (SearchFilter,)
     search_fields = ('username',)
     lookup_field = 'username'
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
     @action(
         detail=False,
-        methods=(['GET', 'PATCH', 'PUT']),
+        methods=(['GET', 'PATCH']),
         permission_classes=[IsAuthenticated],
     )
     def me(self, request):
@@ -125,20 +127,24 @@ class UserViewSet(viewsets.ModelViewSet):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def create_user(request):
-
+    if User.objects.filter(
+            username=request.data.get('username'),
+            email=request.data.get('email')
+    ):
+        return Response(data=request.data, status=status.HTTP_200_OK)
     serializer = CreateUserSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     username = serializer.validated_data.get('username')
     email = serializer.validated_data.get('email')
-    user, created = User.objects.get_or_create(username=username, email=email)
-    token = default_token_generator.make_token(user)
 
+    user, created = User.objects.get_or_create(username=username,
+                                               email=email)
+    token = default_token_generator.make_token(user)
     send_mail(
         'confirmation code',
         token,
         settings.MAILING_EMAIL,
         [email],
-        fail_silently=False,
     )
     return Response(data=serializer.data, status=status.HTTP_200_OK)
 

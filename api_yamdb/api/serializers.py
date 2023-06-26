@@ -3,7 +3,6 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CurrentUserDefault
 from rest_framework.generics import get_object_or_404
 
-
 from reviews.models import Title, Genre, Category, Review, Comment
 from users.models import User
 
@@ -78,8 +77,6 @@ class TitleCreateSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    """Serializer модели User."""
-
     class Meta:
         model = User
         fields = (
@@ -88,22 +85,21 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
-    """Serializer создания нового пользователя."""
-
     class Meta:
         model = User
         fields = ('username', 'email',)
 
     def validate(self, data):
-        if data['username'] == 'me':
+        username = data['username']
+        if username == 'me':
             raise serializers.ValidationError(
                 "Использовать имя 'me' в качестве username запрещено!"
             )
+
         return data
 
 
 class CreateTokenSerializer(serializers.ModelSerializer):
-    """Serializer создания JWT-токена для пользователей."""
     username = serializers.CharField()
     confirmation_code = serializers.CharField()
 
