@@ -3,8 +3,9 @@ from django.core.validators import (RegexValidator, MaxValueValidator,
 from django.db import models
 from django.utils import timezone
 
-from users.models import User
 from api_yamdb.settings import MIN_SCORE, MAX_SCORE
+from users.models import User
+
 
 LENGTH_TEXT = 15
 
@@ -132,15 +133,3 @@ class Genre(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class GenreTitle(models.Model):
-    genre = models.ForeignKey('Genre',
-                              related_name='genre',
-                              on_delete=models.CASCADE)
-    title = models.ForeignKey('Title',
-                              related_name='title',
-                              on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.id

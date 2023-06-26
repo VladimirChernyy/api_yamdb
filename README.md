@@ -1,5 +1,5 @@
 # YaMDb
-### Описание
+## Описание
 Проект YaMDb собирает отзывы пользователей на различные произведения.
 ### Технологии
 - Python 3.10
@@ -47,9 +47,11 @@ Linux/MacOS
 
 Windows
 
-```$ python3 manage.py makemigrations```
+```$ python manage.py makemigrations```
 
-```$ python3 manage.py migrate```
+```$ python manage.py migrate```
+
+```$ python manage.py load_data```
 
 Запустите приложение
 
@@ -58,3 +60,8 @@ Windows
 ```$ python manage.py runserver``` для Windows
 
 Перейдите по ссылке <a href="http://localhost:8010/docs" target="_blank"> http://localhost:8000/ </a>
+
+### Авторы
+- Черный Владимир
+- Дмитрий Ермолаев
+- Лев Червяков
