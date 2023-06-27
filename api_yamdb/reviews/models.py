@@ -10,7 +10,7 @@ from users.models import User
 LENGTH_TEXT = 15
 
 
-class AbstractPubDateAutoNowAdd(models.Model):
+class AbstractPubDate(models.Model):
     pub_date = models.DateTimeField(
         auto_now_add=True,
         verbose_name='Дата публикации',
@@ -20,7 +20,7 @@ class AbstractPubDateAutoNowAdd(models.Model):
         abstract = True
 
 
-class Review(AbstractPubDateAutoNowAdd):
+class Review(AbstractPubDate):
     text = models.TextField(verbose_name='Текст ревью')
     author = models.ForeignKey(
         User,
@@ -61,7 +61,7 @@ class Review(AbstractPubDateAutoNowAdd):
         )
 
 
-class Comment(AbstractPubDateAutoNowAdd):
+class Comment(AbstractPubDate):
     text = models.TextField(verbose_name='текст')
     author = models.ForeignKey(
         User,

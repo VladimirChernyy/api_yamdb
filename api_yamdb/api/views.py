@@ -14,7 +14,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from api.filters import TitleFilter
 from api.mixins import GetListCreateDeleteMixin
-from api.permissions import (IsAdminUser, IsAdminOrReadOnly,
+from api.permissions import (IsAdmin, IsAdminOrReadOnly,
                              IsAdminModeratorAuthor)
 from api.serializers import (TitleSerializer, GenreSerializer,
                              CategorySerializer,
@@ -29,7 +29,7 @@ from users.models import User
 
 class ReviewViewSet(ModelViewSet):
     serializer_class = ReviewSerializer
-    permission_classes = (IsAdminModeratorAuthor,)
+    permission_classes = [IsAdminModeratorAuthor]
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
@@ -45,7 +45,7 @@ class ReviewViewSet(ModelViewSet):
 
 class CommentViewSet(ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = (IsAdminModeratorAuthor,)
+    permission_classes = [IsAdminModeratorAuthor]
 
     def get_queryset(self):
         review_id = self.kwargs.get('review_id')
@@ -95,7 +95,7 @@ class GenreViewSet(GetListCreateDeleteMixin):
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdmin]
     serializer_class = UserSerializer
     filter_backends = (SearchFilter,)
     search_fields = ('username',)
