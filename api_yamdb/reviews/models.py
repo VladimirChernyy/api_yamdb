@@ -10,7 +10,21 @@ from users.models import User
 LENGTH_TEXT = 15
 
 
-class Review(models.Model):
+class AbstractDateTimeModel(models.Model):
+    pub_date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата публикации',
+    )
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return f"{self.__class__.__name__} {self.pk}\
+            ({self.pub_date.strftime('%Y-%m-%d %H:%M:%S')})"
+
+
+class Review(AbstractDateTimeModel):
     text = models.TextField(verbose_name='Текст ревью')
     author = models.ForeignKey(
         User,
@@ -31,10 +45,6 @@ class Review(models.Model):
             ),
         ),
     )
-    pub_date = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name='Дата публикации',
-    )
     title = models.ForeignKey(
         'Title',
         on_delete=models.CASCADE,
@@ -54,21 +64,14 @@ class Review(models.Model):
             ),
         )
 
-    def __str__(self):
-        return self.text[:LENGTH_TEXT]
 
-
-class Comment(models.Model):
+class Comment(AbstractDateTimeModel):
     text = models.TextField(verbose_name='текст')
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='comments',
         verbose_name='Aвтор',
-    )
-    pub_date = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name='Дата публикации',
     )
     review = models.ForeignKey(
         Review,
@@ -81,9 +84,6 @@ class Comment(models.Model):
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
         ordering = ('-pub_date',)
-
-    def __str__(self):
-        return self.text[:LENGTH_TEXT]
 
 
 class Title(models.Model):
@@ -103,7 +103,7 @@ class Title(models.Model):
     class Meta:
         ordering = ('-id',)
 
-    def __str__(self):
+    def str(self):
         return self.name
 
 
@@ -117,7 +117,7 @@ class Category(models.Model):
     class Meta:
         ordering = ('-id',)
 
-    def __str__(self):
+    def str(self):
         return self.name
 
 
@@ -131,5 +131,5 @@ class Genre(models.Model):
     class Meta:
         ordering = ('-id',)
 
-    def __str__(self):
+    def str(self):
         return self.name
