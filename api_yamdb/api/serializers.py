@@ -1,3 +1,5 @@
+import re
+
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CurrentUserDefault
@@ -85,17 +87,35 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(max_length=50)
+    email = serializers.EmailField(max_length=254)
+
     class Meta:
         model = User
         fields = ('username', 'email',)
 
-    def validate(self, data):
-        username = data['username']
-        if username == 'me':
+    def validate_username(self, username):
+        if username.lower() == 'me':
             raise serializers.ValidationError(
                 "Использовать имя 'me' в качестве username запрещено!"
             )
+        if re.search(r'[a-zA-Z][a-zA-Z0-9-_/.]{1,20}$', username) is None:
+            raise ValidationError('Недопустимые символы в имени')
+        return username
 
+    def validate(self, data):
+        username = data['username']
+        email = data['email']
+        if User.objects.filter(username=username).exists():
+            user = User.objects.get(username=username)
+            if user.email == email:
+                return data
+            raise ValidationError('Имя уже занято')
+        if User.objects.filter(email=email).exists():
+            user = User.objects.get(email=email)
+            if user.username == username:
+                return data
+            raise ValidationError('Почта уже занята')
         return data
 
 
