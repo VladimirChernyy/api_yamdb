@@ -99,22 +99,18 @@ class CreateUserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "Использовать имя 'me' в качестве username запрещено!"
             )
-        if re.search(r'[a-zA-Z][a-zA-Z0-9-_/.]{1,20}$', username) is None:
+        if not re.search(r'[a-zA-Z][a-zA-Z0-9-_/.]{1,20}$', username):
             raise ValidationError('Недопустимые символы в имени')
         return username
 
     def validate(self, data):
         username = data['username']
         email = data['email']
+        if User.objects.filter(username=username, email=email).exists():
+            return data
         if User.objects.filter(username=username).exists():
-            user = User.objects.get(username=username)
-            if user.email == email:
-                return data
             raise ValidationError('Имя уже занято')
         if User.objects.filter(email=email).exists():
-            user = User.objects.get(email=email)
-            if user.username == username:
-                return data
             raise ValidationError('Почта уже занята')
         return data
 

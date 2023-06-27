@@ -10,7 +10,7 @@ from users.models import User
 LENGTH_TEXT = 15
 
 
-class AbstractDateTimeModel(models.Model):
+class AbstractPubDateAutoNowAdd(models.Model):
     pub_date = models.DateTimeField(
         auto_now_add=True,
         verbose_name='Дата публикации',
@@ -19,12 +19,8 @@ class AbstractDateTimeModel(models.Model):
     class Meta:
         abstract = True
 
-    def __str__(self):
-        return f"{self.__class__.__name__} {self.pk}\
-            ({self.pub_date.strftime('%Y-%m-%d %H:%M:%S')})"
 
-
-class Review(AbstractDateTimeModel):
+class Review(AbstractPubDateAutoNowAdd):
     text = models.TextField(verbose_name='Текст ревью')
     author = models.ForeignKey(
         User,
@@ -65,7 +61,7 @@ class Review(AbstractDateTimeModel):
         )
 
 
-class Comment(AbstractDateTimeModel):
+class Comment(AbstractPubDateAutoNowAdd):
     text = models.TextField(verbose_name='текст')
     author = models.ForeignKey(
         User,

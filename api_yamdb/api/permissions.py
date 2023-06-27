@@ -3,8 +3,10 @@ from rest_framework import permissions
 
 class IsAdminOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
-        # Разрешаем неаутентифицированным пользователям выполнять
-        # безопасные методы (GET, HEAD, OPTIONS)
+        """
+        Разрешаем неаутентифицированным пользователям выполнять
+        безопасные методы (GET, HEAD, OPTIONS).
+        """
         if not request.user.is_authenticated:
             return request.method in permissions.SAFE_METHODS
         # Разрешаем аутентифицированным пользователям выполнять
@@ -32,5 +34,6 @@ class IsAdminModeratorAuthor(permissions.BasePermission):
 
 class IsAdminUser(permissions.BasePermission):
     def has_permission(self, request, view):
-        return (request.user.is_authenticated
-                and (request.user.is_admin or request.user.is_superuser))
+        if not request.user.is_authenticated:
+            return False
+        return request.user.is_admin or request.user.is_superuser
